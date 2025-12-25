@@ -299,6 +299,25 @@ body {
     font-size: 0.75rem;
 }
 
+.btn-xs {
+    padding: 2px 5px;
+    font-size: 0.7rem;
+    border-radius: 3px;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: #fff !important;
+}
+
+/* KPI Layout */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
 .badge {
     padding: 0.35em 0.65em;
     font-size: 0.75em;
@@ -346,7 +365,7 @@ body {
     border-radius: 0.5rem;
     overflow: hidden;
     position: relative;
-    group: hover;
+    cursor: pointer;
 }
 
 .media-preview {
@@ -448,9 +467,46 @@ body {
         margin-left: calc(-1 * var(--sidebar-width));
         position: absolute;
         z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .sidebar.active {
         margin-left: 0;
     }
+
+    .header-actions {
+        gap: 0.5rem;
+    }
+}
+
+/* Toggle Button (Hidden on Desktop) */
+.admin-toggle {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+@media (max-width: 992px) {
+    .admin-toggle {
+        display: block;
+    }
+}
+
+/* Mobile Overlay for sidebar */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.sidebar-overlay.active {
+    display: block;
 }

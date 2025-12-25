@@ -439,29 +439,57 @@
                 return;
             }
 
+            // SIMULATE STK PUSH
+            const modalHtml = `
+                <div id="stkModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; display:flex; align-items:center; justify-content:center; color:white; text-align:center;">
+                    <div style="background:white; color:#333; padding:30px; border-radius:15px; width:350px;">
+                        <div style="font-size:3rem; margin-bottom:15px;">📲</div>
+                        <h3 style="margin-bottom:10px;">Check Your Phone</h3>
+                        <p>We've sent an M-Pesa payment request of <strong>KES ${total.toLocaleString()}</strong> to <strong>${phone}</strong>.</p>
+                        <p style="margin:20px 0; font-size:0.9rem; color:#666;">Please enter your M-Pesa PIN to complete the transaction.</p>
+                        <div style="margin-top:20px;">
+                            <div class="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid #28a745; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                            <p style="margin-top:10px; font-size:0.8rem;">Waiting for payment...</p>
+                        </div>
+                    </div>
+                </div>
+                <style>@keyframes spin {0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }}</style>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Simulate server response after 4 seconds
+            setTimeout(() => {
+                completeOrder(phone, total, cart);
+            }, 4000);
+        }
+
+        function completeOrder(phone, total, items) {
             // Save order locally
             const order = {
                 id: Date.now(),
-                items: cart,
+                items: items,
                 total: total,
                 phone: phone,
-                status: "Pending Payment",
+                status: "Paid", // Auto-mark as paid for simulation
+                method: "M-Pesa",
                 timestamp: new Date().toISOString()
             };
             let orders = JSON.parse(localStorage.getItem('dave_orders')) || [];
             orders.push(order);
             localStorage.setItem('dave_orders', JSON.stringify(orders));
 
-            // WhatsApp Redirect
-            const orderSummary = cart.map(i => `${i.name} (x${i.qty})`).join(', ');
-            const message = `Hello Dave Auto, I would like to pay via M-Pesa:%0A%0A*Order:* ${orderSummary}%0A*Total:* KES ${total}%0A*Phone:* ${phone}%0A*Request:* Please send STK Push.`;
-
             // Clear cart
             cart = [];
             updateCart();
             closeCart();
 
-            window.location.href = `https://wa.me/254721692823?text=${message}`;
+            // Remove STK Modal
+            const stkModal = document.getElementById('stkModal');
+            if (stkModal) stkModal.remove();
+
+            // Success Message
+            alert(`✅ Payment Successful!\n\nOrder #${order.id} has been confirmed. We will contact you shortly.`);
         }
 
         // Initialize
