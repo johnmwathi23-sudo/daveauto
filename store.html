@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spare Parts Store | Dave Auto Solutions Ltd</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-img {
+            height: 200px;
+            width: 100%;
+            object-fit: contain;
+            background-color: #f9f9f9;
+        }
+
+        .product-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .product-category {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .add-to-cart {
+            margin-top: auto;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--dark-grey);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background-color: var(--primary-blue);
+        }
+
+        /* Cart Modal */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: flex-end;
+            z-index: 2000;
+        }
+
+        .cart-overlay.active {
+            display: flex;
+        }
+
+        .cart-sidebar {
+            width: 400px;
+            background: white;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-btn-floating {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-blue);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 900;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            font-size: 0.8rem;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Dave Auto <span style="color: var(--dark-grey);">Solutions</span></a>
+            <div class="hamburger" id="hamburger">
+                <span>&#9776;</span>
+            </div>
+            <nav class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="services.html">Garage Services</a>
+                <a href="store.html" class="active">Spare Parts</a>
+                <a href="book.html" class="btn btn-primary" style="color: white;">Book Service</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="cart-btn-floating" onclick="openCart()">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+    </div>
+
+    <!-- Banner -->
+    <div style="background-color: #f4f4f4; padding: 40px 0; text-align: center;">
+        <div class="container">
+            <h1>Spare Parts Store</h1>
+            <p>Genuine parts for Toyota, Nissan, Subaru, and more.</p>
+        </div>
+    </div>
+
+    <!-- Featured Section -->
+    <section style="padding: 20px 0; background-color: #fff;">
+        <div class="container">
+            <h2 style="margin-bottom: 20px;">Featured Items</h2>
+            <div id="featuredGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px;">
+                <!-- Featured items injected via JS -->
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="#inventorySection" class="btn btn-primary" style="padding: 12px 30px;">View Full Inventory
+                    &darr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Inventory Section -->
+    <section id="inventorySection" style="padding: var(--section-padding);">
+        <div class="container">
+            <div style="border-bottom: 2px solid #eee; margin-bottom: 30px; padding-bottom: 10px;">
+                <h2>Full Inventory</h2>
+            </div>
+
+            <div style="margin-bottom: 30px; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                <button class="btn btn-primary" onclick="filterProducts('All')">All</button>
+                <button class="btn" style="background:#eee;"
+                    onclick="filterProducts('Maintenance')">Maintenance</button>
+                <button class="btn" style="background:#eee;" onclick="filterProducts('Brakes')">Brakes</button>
+                <button class="btn" style="background:#eee;" onclick="filterProducts('Suspension')">Suspension</button>
+                <button class="btn" style="background:#eee;" onclick="filterProducts('Electrical')">Electrical</button>
+                <button class="btn" style="background:#eee;" onclick="filterProducts('Body & Paint')">Body</button>
+            </div>
+
+            <div id="productGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px;">
+                <!-- Products injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay">
+        <div class="cart-sidebar">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Your Cart</h2>
+                <button onclick="closeCart()"
+                    style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items -->
+            </div>
+
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">KES 0</span>
+            </div>
+
+            <div
+                style="background-color: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9rem;">
+                <p><strong>Payment Disclaimer:</strong> Payments are processed via M-Pesa STK Push. You will receive a
+                    prompt on your phone.</p>
+            </div>
+
+            <div id="checkoutForm">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <strong style="color: #28a745; font-size: 1.2rem;">M-PESA CHECKOUT</strong>
+                </div>
+                <input type="tel" id="checkoutPhone" placeholder="Enter M-Pesa Phone (07...)"
+                    style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+                <button onclick="checkout()" class="btn btn-primary"
+                    style="width: 100%; background-color: #28a745; border-color: #28a745;">
+                    PROCEED TO PAY
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2025 Dave Auto Solutions Ltd. <a href="admin.html"
+                    style="font-size: 0.8rem; color: #555; text-decoration: none; margin-left: 10px;">Admin Login</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+
+        // Initialize Dynamic Products or Defaults
+        const defaultProducts = [
+            { id: 1, name: "Synth-X Motor Oil 5W-30", category: "Maintenance", condition: "New", stock: 20, price: 3500, image: "assets/images/product_oil_can.png" },
+            { id: 2, name: "Ceramic Brake Pads (Front)", category: "Brakes", condition: "New", stock: 15, price: 4500, image: "assets/images/spare_parts_store.png" },
+            { id: 3, name: "Toyota Oil Filter", category: "Maintenance", condition: "New", stock: 50, price: 1200, image: "assets/images/product_oil_can.png" },
+            { id: 4, name: "Spark Plugs (Set of 4)", category: "Electrical", condition: "New", stock: 30, price: 2800, image: "assets/images/spare_parts_store.png" },
+            { id: 5, name: "Air Filter Generic", category: "Maintenance", condition: "New", stock: 40, price: 1500, image: "assets/images/spare_parts_store.png" },
+            { id: 6, name: "KYB Shock Absorber (Rear)", category: "Suspension", condition: "New", stock: 12, price: 6500, image: "assets/images/spare_parts_store.png" },
+            { id: 7, name: "Brake Fluid DOT4", category: "Brakes", condition: "New", stock: 25, price: 800, image: "assets/images/product_oil_can.png" },
+            { id: 8, name: "Car Battery 60Ah", category: "Electrical", condition: "New", stock: 8, price: 8500, image: "assets/images/spare_parts_store.png" },
+            { id: 9, name: "Used Gearbox (Toyota)", category: "Maintenance", condition: "Used", stock: 1, price: 45000, image: "assets/images/spare_parts_store.png" },
+            { id: 10, name: "Used Headlight (Left)", category: "Body & Paint", condition: "Used", stock: 2, price: 15000, image: "assets/images/spare_parts_store.png" },
+            { id: 11, name: "Used Alternator", category: "Electrical", condition: "Used", stock: 3, price: 12000, image: "assets/images/spare_parts_store.png" }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('dave_products')) || defaultProducts;
+        // Ensure legacy products have condition and stock if missing
+        products = products.map(p => ({
+            ...p,
+            condition: p.condition || 'New',
+            stock: p.stock !== undefined ? p.stock : 10
+        }));
+
+        let cart = JSON.parse(localStorage.getItem('dave_cart')) || [];
+
+        function renderFeatured() {
+            const grid = document.getElementById('featuredGrid');
+            grid.innerHTML = '';
+
+            const newItems = products.filter(p => p.condition === 'New').slice(0, 3);
+            const usedItems = products.filter(p => p.condition === 'Used').slice(0, 3);
+            const featured = [...newItems, ...usedItems];
+
+            featured.forEach(product => {
+                const badgeColor = product.condition === 'Used' ? '#ffc107' : '#28a745';
+                grid.innerHTML += `
+                    <div class="product-card" style="border: 2px solid ${badgeColor};">
+                        <div style="position: absolute; top: 10px; right: 10px; background: ${badgeColor}; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+                            ${product.condition}
+                        </div>
+                        <img src="${product.image}" alt="${product.name}" class="product-img">
+                        <div class="product-info">
+                            <div class="product-category">${product.category}</div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">KES ${product.price.toLocaleString()}</div>
+                            <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderProducts(filter = 'All') {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'All' ? products : products.filter(p => p.category === filter);
+
+            filtered.forEach(product => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}" class="product-img">
+                        <div class="product-info">
+                            <div class="product-category">${product.category}</div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">KES ${product.price.toLocaleString()}</div>
+                            <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const existing = cart.find(p => p.id === id);
+
+            if (product.stock <= 0) {
+                alert("Sorry, this item is out of stock.");
+                return;
+            }
+
+            if (existing) {
+                if (existing.qty >= product.stock) {
+                    alert("Sorry, we sort of ran out of that one. Max stock reached.");
+                    return;
+                }
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCart();
+            openCart();
+        }
+
+        function updateCart() {
+            localStorage.setItem('dave_cart', JSON.stringify(cart));
+            document.getElementById('cartCount').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+
+            const cartItemsContainer = document.getElementById('cartItems');
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                cartItemsContainer.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>KES ${item.price} x ${item.qty}</small>
+                        </div>
+                        <div>
+                            <button onclick="removeFromCart(${index})" style="color:red; background:none; border:none; cursor:pointer;">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cartTotal').innerText = 'KES ' + total.toLocaleString();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function openCart() {
+            document.getElementById('cartOverlay').classList.add('active');
+        }
+
+        function closeCart() {
+            document.getElementById('cartOverlay').classList.remove('active');
+        }
+
+        function filterProducts(cat) {
+            renderProducts(cat);
+        }
+
+        function checkout() {
+            const phone = document.getElementById('checkoutPhone').value;
+            if (!phone || phone.length < 10) {
+                alert("Please enter a valid phone number for payment.");
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            if (total === 0) {
+                alert("Cart is empty");
+                return;
+            }
+
+            // Save order locally
+            const order = {
+                id: Date.now(),
+                items: cart,
+                total: total,
+                phone: phone,
+                status: "Pending Payment",
+                timestamp: new Date().toISOString()
+            };
+            let orders = JSON.parse(localStorage.getItem('dave_orders')) || [];
+            orders.push(order);
+            localStorage.setItem('dave_orders', JSON.stringify(orders));
+
+            // WhatsApp Redirect
+            const orderSummary = cart.map(i => `${i.name} (x${i.qty})`).join(', ');
+            const message = `Hello Dave Auto, I would like to pay via M-Pesa:%0A%0A*Order:* ${orderSummary}%0A*Total:* KES ${total}%0A*Phone:* ${phone}%0A*Request:* Please send STK Push.`;
+
+            // Clear cart
+            cart = [];
+            updateCart();
+            closeCart();
+
+            window.location.href = `https://wa.me/254721692823?text=${message}`;
+        }
+
+        // Initialize
+        renderFeatured();
+        renderProducts();
+        updateCart();
+    </script>
+</body>
+
+</html>

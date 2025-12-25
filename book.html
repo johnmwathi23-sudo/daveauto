@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Service | Dave Auto Solutions Ltd</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Dave Auto <span style="color: var(--dark-grey);">Solutions</span></a>
+            <div class="hamburger" id="hamburger">
+                <span>&#9776;</span>
+            </div>
+            <nav class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="services.html">Garage Services</a>
+                <a href="store.html">Spare Parts</a>
+                <a href="book.html" class="active btn btn-primary" style="color: white;">Book Service</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-header"
+        style="background-color: var(--dark-grey); color: white; padding: 60px 0; text-align: center;">
+        <div class="container">
+            <h1>Book Your Service</h1>
+            <p>Schedule a visit to our garage in Ngara</p>
+        </div>
+    </section>
+
+    <section style="padding: var(--section-padding);">
+        <div class="container">
+            <div
+                style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-radius: 10px;">
+                <form id="bookingForm">
+                    <div style="margin-bottom: 20px;">
+                        <label for="name" style="display: block; margin-bottom: 5px; font-weight: 600;">Full
+                            Name</label>
+                        <input type="text" id="name" required
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="phone" style="display: block; margin-bottom: 5px; font-weight: 600;">Phone
+                            Number</label>
+                        <input type="tel" id="phone" required placeholder="0712345678"
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <label for="vehicle" style="display: block; margin-bottom: 5px; font-weight: 600;">Vehicle
+                                Make & Model</label>
+                            <input type="text" id="vehicle" required placeholder="e.g., Toyota Fielder"
+                                style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;">
+                        </div>
+                        <div>
+                            <label for="year" style="display: block; margin-bottom: 5px; font-weight: 600;">Year</label>
+                            <input type="number" id="year" required placeholder="2015" min="1990" max="2026"
+                                style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="service" style="display: block; margin-bottom: 5px; font-weight: 600;">Service
+                            Type</label>
+                        <select id="service"
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;">
+                            <option value="General Maintenance">General Maintenance</option>
+                            <option value="Diagnostics">Computer Diagnostics</option>
+                            <option value="Hybrid Service">Hybrid & EV Service</option>
+                            <option value="Engine Repair">Engine & Transmission</option>
+                            <option value="Suspension">Suspension & Brakes</option>
+                            <option value="Bodywork">Bodywork & Paint</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="date" style="display: block; margin-bottom: 5px; font-weight: 600;">Preferred
+                            Date & Time</label>
+                        <input type="datetime-local" id="date" required
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="issue" style="display: block; margin-bottom: 5px; font-weight: 600;">Describe the
+                            Issue (Optional)</label>
+                        <textarea id="issue" rows="4"
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; padding: 15px; font-size: 1.1rem;">Confirm Booking via WhatsApp</button>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #777; text-align: center;">You will be
+                        redirected to WhatsApp to send your booking details directly to our admin.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2025 Dave Auto Solutions Ltd. <a href="admin.html"
+                    style="font-size: 0.8rem; color: #555; text-decoration: none; margin-left: 10px;">Admin Login</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Pre-select service from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const preSelectedService = urlParams.get('service');
+        if (preSelectedService) {
+            const serviceSelect = document.getElementById('service');
+            // Try to match value, else keep default "General Maintenance"
+            for (let i = 0; i < serviceSelect.options.length; i++) {
+                if (serviceSelect.options[i].value.includes(preSelectedService)) {
+                    serviceSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const vehicle = document.getElementById('vehicle').value;
+            const year = document.getElementById('year').value;
+            const service = document.getElementById('service').value;
+            const date = document.getElementById('date').value; // Returns ISO string for datetime
+            const issue = document.getElementById('issue').value;
+
+            // Save booking locally (mock DB)
+            const booking = {
+                id: Date.now(),
+                name, phone, vehicle, year, service, date, issue,
+                status: 'Pending',
+                timestamp: new Date().toISOString()
+            };
+
+            let bookings = JSON.parse(localStorage.getItem('dave_bookings')) || [];
+            bookings.push(booking);
+            localStorage.setItem('dave_bookings', JSON.stringify(bookings));
+
+            alert("Booking details saved for Admin! Redirecting to WhatsApp to finalize...");
+
+            // Redirect to WhatsApp
+            const message = `Hello Dave Auto, I would like to book a service:%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Vehicle:* ${vehicle} (${year})%0A*Service:* ${service}%0A*Date:* ${new Date(date).toLocaleString()}%0A*Issue:* ${issue}`;
+
+            const adminPhone = "254721692823";
+            window.location.href = `https://wa.me/${adminPhone}?text=${message}`;
+        });
+    </script>
+</body>
+
+</html>
